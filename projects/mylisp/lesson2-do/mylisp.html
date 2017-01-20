@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html style="overflow:scroll;">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="../codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="../codemirror/addon/display/fullscreen.css">
+    <link rel="stylesheet" href="../codemirror/theme/mylisp.css">
+  </head>
+  <body>
+<textarea id="code">
+"コードを実行するためには、マウスなどで実行範囲を選択してからF2キーを押します。"
+"実行結果はconsole.log()で出力されるエリアに出力されます。Chromeの場合はF12キーで表示可能です。"
+
+"引数を順番に実行するのがdoです。"
+["do", ["alert", "１番目に実行"],
+       ["alert", "２番目に実行"],
+       ["alert", "３番目に実行"]]
+
+"doは引数を順番に実行し、最後の値を返却します。"
+["do", ["do", ["alert", "１番目に実行"], 1],
+       ["do", ["alert", "２番目に実行"], 2],
+       ["do", ["alert", "３番目に実行"], 3]]
+</textarea>
+    <script type="text/javascript" src="../codemirror/lib/codemirror.js"></script>
+    <script type="text/javascript" src="../codemirror/mode/mylisp/mylisp.js"></script>
+    <script type="text/javascript" src="../codemirror/addon/display/fullscreen.js"></script>
+    <script type="text/javascript" src="../codemirror/addon/edit/closebrackets.js"></script>
+    <script type="text/javascript" src="../codemirror/addon/edit/matchbrackets.js"></script>
+    <script type="text/javascript" src="../codemirror/addon/selection/active-line.js"></script>
+    <script type="text/javascript" src="mylisp.js"></script>
+    <script type="text/javascript" src="mylisp-editor.js"></script>
+  </body>
+</html>

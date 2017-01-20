@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html style="overflow:scroll;">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="../codemirror/lib/codemirror.css">
+    <link rel="stylesheet" href="../codemirror/addon/display/fullscreen.css">
+    <link rel="stylesheet" href="../codemirror/theme/mylisp.css">
+  </head>
+  <body>
+<textarea id="code">
+"コードを実行するためには、マウスなどで実行範囲を選択してからF2キーを押します。"
+"実行結果はconsole.log()で出力されるエリアに出力されます。Chromeの場合はF12キーで表示可能です。"
+
+"JavaScriptにおける var increment = function(x){return 1 + x;}; を表現すると以下のようになります。"
+["def", "increment", ["fn", ["x"],
+                            ["+", 1, "x"]]]
+
+"上記の関数に、たとえば引数として2を渡して計算してみます。"
+"JavaScriptでは increment(2); です。"
+"これをmylispで表現すると以下のようになります。"
+["increment", "2"]
+
+"以前はこの計算の後に以下を評価すると「2」になってしまいましたが、解消されています。"
+
+"x"
+</textarea>
+    <script type="text/javascript" src="../codemirror/lib/codemirror.js"></script>
+    <script type="text/javascript" src="../codemirror/mode/mylisp/mylisp.js"></script>
+    <script type="text/javascript" src="../codemirror/addon/display/fullscreen.js"></script>
+    <script type="text/javascript" src="../codemirror/addon/edit/closebrackets.js"></script>
+    <script type="text/javascript" src="../codemirror/addon/edit/matchbrackets.js"></script>
+    <script type="text/javascript" src="../codemirror/addon/selection/active-line.js"></script>
+    <script type="text/javascript" src="mylisp.js"></script>
+    <script type="text/javascript" src="mylisp-editor.js"></script>
+  </body>
+</html>
