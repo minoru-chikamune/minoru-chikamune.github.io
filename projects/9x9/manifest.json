@@ -10,8 +10,8 @@
       "type": "image/png"
     }
   ],
-  "scope": "/",
-  "start_url": "/",
+  "scope": "./",
+  "start_url": "./",
   "theme_color": "#FFFFFF",
   "background_color": "#FFFFFF"
 }
