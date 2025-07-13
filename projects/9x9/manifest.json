@@ -5,13 +5,13 @@
   "display": "standalone",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "https://minoru-chikamune.github.io/projects/9x9/icon.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ],
-  "scope": "./",
-  "start_url": "./",
+  "scope": "https://minoru-chikamune.github.io/projects/9x9/",
+  "start_url": "https://minoru-chikamune.github.io/projects/9x9/index.html",
   "theme_color": "#FFFFFF",
   "background_color": "#FFFFFF"
 }
