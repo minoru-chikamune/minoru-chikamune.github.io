@@ -1,0 +1,17 @@
+{
+  "name": "9x9",
+  "short_name": "9x9",
+  "description": "9x9 school homework.",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "scope": "/",
+  "start_url": "/",
+  "theme_color": "#FFFFFF",
+  "background_color": "#FFFFFF"
+}

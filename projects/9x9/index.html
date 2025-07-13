@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>9x9</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="shortcut icon" href="icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      * {
+        font-family: monospace,sans-serif;
+        font-size: 24px;
+        margin: 0;
+      }
+      body {background: white;}
+      #status_area {background: #eaeaff;}
+      #question_area {background: #e5ffcc;}
+      #end_message {background: #ffccff; display: none;}
+      #history_area {background: #ffff8e;}
+      #record_area {background: #ffffd1;}
+    </style>
+  </head>
+  <body>
+    <div id="status_area">
+      <ul>
+      <li>時間: <span id="stopwatch">-</span><br></li>
+      <li>残り: <span id="remaining_count">81</span> 問</li>
+      </ul>
+    </div>
+    <div id="question_area">
+      問題:<br>
+      <span id="x">?</span>
+      x
+      <span id="y">?</span>
+      =
+      <input id="ans" type="text" size="5" inputmode="numeric">
+      <div id="help_message">(なにか入力するとスタート！)</div>
+      <div>
+        <ul id="history"></ul>
+      </div>
+    </div>
+    <div id="end_message">おわり！おめでとう！
+      <button onclick="window.location.reload();">もういちど</button>
+    </div>
+    <div id="record_area">
+      前のきろく:<br>
+      <ul id="records"></ul>
+    </div>
+  </body>
+  <script>
+    self.addEventListener('DOMContentLoaded', async () => {
+  if ('serviceWorker' in navigator) {
+    const controller = navigator.serviceWorker.controller;
+    if (!controller) {
+      await navigator.serviceWorker.register('/sw.js');
+    }
+  }
+});
+  </script>
+  <script>
+    const x_node = document.getElementById('x');
+    const y_node = document.getElementById('y');
+    const answer_node = document.getElementById('ans');
+    const remaining_count_node = document.getElementById('remaining_count');
+    const help_message = document.getElementById('help_message');
+    const history_node = document.getElementById('history');
+    const stopwatch_node = document.getElementById('stopwatch');
+    const question_area_node = document.getElementById('question_area');
+    const end_message_node = document.getElementById('end_message');
+    const records_node = document.getElementById('records');
+    const set_x = (val) => {x_node.innerHTML = '' + val;};
+    const set_y = (val) => {y_node.innerHTML = '' + val;};
+    const get_x = () => parseInt(x_node.innerHTML);
+    const get_y = () => parseInt(y_node.innerHTML);
+    const get_ans = () => parseInt(answer_node.value);
+    const shuffle = (arr) => {arr.sort(() => Math.random() - 0.5);};
+    const store_record = (start_time, end_time) => {
+      const time_record = JSON.parse(localStorage.getItem('time_record') || '[]');
+      time_record.push([start_time, end_time]);
+      localStorage.setItem('time_record', JSON.stringify(time_record));
+    };
+    const format_date = (date) => `${date.getFullYear()}/${1+date.getMonth()}/${date.getDate()} ${date.getHours()}:${date.getMinutes()}`;
+    const calc_time = (start_time, end_time) => {
+      total_sec = Math.round((end_time - start_time) / 1000);
+      min = Math.floor(total_sec / 60);
+      sec = Math.round(total_sec % 60);
+      if (min === 0) {
+        return `${sec} 秒`;
+      }
+      return `${min} 分 ${sec} 秒`;
+    };
+    const show_record = () => {
+      records_node.replaceChildren();
+      const time_record = JSON.parse(localStorage.getItem('time_record') || '[]');
+      time_record.forEach(rec => {
+        const start_time = rec[0];
+        const end_time = rec[1];
+        let li_node = document.createElement('li');
+        li_node.innerHTML = `${format_date(new Date(end_time))} : ${calc_time(start_time, end_time)}`;
+        records_node.prepend(li_node);
+      });
+    };
+    show_record();
+    const gen_questions = () => {
+      let questions = [];
+      for (let x = 1; x <= 9; x++) {
+        for (let y = 1; y <= 9; y++) {
+          questions.push([x, y]);
+        }
+      }
+      shuffle(questions);
+      return questions;
+    };
+    let questions = gen_questions();
+    // answer_node.focus();
+    answer_node.setSelectionRange(0, answer_node.value.length);
+    let start_time_ms = 0;
+    let end_time_ms = 0;
+    const update_stopwatch = () => {
+      const now = Date.now();
+      if (start_time_ms === 0 || start_time_ms < end_time_ms) {
+        return;
+      }
+      stopwatch_node.innerHTML = calc_time(start_time_ms, now);
+    };
+    setInterval(update_stopwatch, 100);
+    const pop_question = () => {
+      if (questions.length == 0) {
+        end_time_ms = Date.now();
+        remaining_count_node.innerHTML = '' + questions.length;
+        question_area_node.style.display = 'none';
+        end_message_node.style.display = 'block';
+        store_record(start_time_ms, end_time_ms);
+        show_record();
+        return;
+      }
+      remaining_count_node.innerHTML = '' + questions.length;
+      const question = questions.pop();
+      const x = question[0];
+      const y = question[1];
+      set_x(x);
+      set_y(y);
+      answer_node.value = '';
+    };
+    const handle_key = () => {
+      if (start_time_ms === 0) {
+        pop_question();
+        start_time_ms = Date.now();
+        help_message.style.display = 'none';
+        return;
+      }
+      if (answer_node.value == '') {
+        return;
+      }
+      if (answer_node.value.length >= 2) {
+        answer_node.setSelectionRange(0, answer_node.value.length);
+      }
+      if (get_x() * get_y() === get_ans()) {
+        let li_node = document.createElement('li');
+        li_node.innerHTML = `${get_x()} x ${get_y()} = ${get_ans()}`;
+        history_node.prepend(li_node);
+        pop_question();
+        return;
+      }
+    }
+    answer_node.onkeyup = handle_key;
+    answer_node.onkeydown = (ev) => {
+      const key = ev.key;
+      if (ev.key < '0' || ev.key > '9') {
+        answer_node.value = '';
+        return false;
+      }
+    };
+  </script>
+</html>
